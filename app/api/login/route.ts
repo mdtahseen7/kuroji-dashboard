@@ -3,11 +3,11 @@ import { AUTH_COOKIE, authToken, checkPassword } from "@/lib/auth";
 
 export async function POST(req: Request) {
   const { password } = (await req.json().catch(() => ({}))) as { password?: string };
-  if (!password || !checkPassword(password)) {
+  if (!password || !(await checkPassword(password))) {
     return NextResponse.json({ error: "wrong password" }, { status: 401 });
   }
   const res = NextResponse.json({ ok: true });
-  res.cookies.set(AUTH_COOKIE, authToken(), {
+  res.cookies.set(AUTH_COOKIE, await authToken(), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",
