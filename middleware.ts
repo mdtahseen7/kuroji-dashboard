@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { AUTH_COOKIE, isAuthed } from "./lib/auth";
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   if (pathname === "/login" || pathname.startsWith("/api/login")) {
     return NextResponse.next();
   }
-  if (isAuthed(req.cookies.get(AUTH_COOKIE)?.value)) {
+  if (await isAuthed(req.cookies.get(AUTH_COOKIE)?.value)) {
     return NextResponse.next();
   }
   if (pathname.startsWith("/api/")) {
